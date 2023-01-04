@@ -1,0 +1,33 @@
+{
+	"extends": "@react-native-community",
+	"plugins": [
+		"eslint-plugin-import-helpers"
+	],
+	"rules": {
+		"react/react-in-jsx-scope": "off",
+		"react/no-unstable-nested-components": "off",
+		"no-empty-function": "off",
+		"react-hooks/exhaustive-deps": "off",
+		"react-native/no-inline-styles": "off",
+		"@typescript-eslint/no-empty-function": "off",
+		"import-helpers/order-imports": [
+			"warn",
+			{
+				"newlinesBetween": "always",
+				"groups": [
+					"module",
+					"/^@/",
+					[
+						"parent",
+						"sibling",
+						"index"
+					]
+				],
+				"alphabetize": {
+					"order": "asc",
+					"ignoreCase": true
+				}
+			}
+		]
+	}
+}
