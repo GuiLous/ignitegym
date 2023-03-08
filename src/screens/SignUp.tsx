@@ -1,10 +1,9 @@
-import { Center, Heading, Image, ScrollView, Text, VStack } from 'native-base';
-
 import BackgroundImg from '@assets/background.png';
 import LogoSvg from '@assets/logo.svg';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
 import { useNavigation } from '@react-navigation/native';
+import { Center, Heading, Image, ScrollView, Text, VStack } from 'native-base';
 
 export function SignUp() {
   const { goBack } = useNavigation();
