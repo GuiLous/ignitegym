@@ -16,7 +16,6 @@
 				"newlinesBetween": "always",
 				"groups": [
 					"module",
-					"/^@/",
 					[
 						"parent",
 						"sibling",
