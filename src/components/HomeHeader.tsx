@@ -31,7 +31,7 @@ export function HomeHeader() {
       </VStack>
 
       <TouchableOpacity>
-        <Icon as={MaterialIcons} name="logout" color="gray.200" size={8} />
+        <Icon as={MaterialIcons} name="logout" color="gray.200" size={7} />
       </TouchableOpacity>
     </HStack>
   );
