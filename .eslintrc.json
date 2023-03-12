@@ -1,7 +1,7 @@
 {
 	"extends": "@react-native-community",
 	"plugins": [
-		"eslint-plugin-import-helpers"
+		"simple-import-sort"
 	],
 	"rules": {
 		"react/react-in-jsx-scope": "off",
@@ -10,23 +10,40 @@
 		"react-hooks/exhaustive-deps": "off",
 		"react-native/no-inline-styles": "off",
 		"@typescript-eslint/no-empty-function": "off",
-		"import-helpers/order-imports": [
-			"warn",
-			{
-				"newlinesBetween": "always",
-				"groups": [
-					"module",
-					[
-						"parent",
-						"sibling",
-						"index"
-					]
-				],
-				"alphabetize": {
-					"order": "asc",
-					"ignoreCase": true
-				}
-			}
-		]
+		"simple-import-sort/imports": [
+      "warn",
+      {
+        "groups": [
+          // Packages `react` related packages come first.
+          [
+            "^react",
+            "^@?\\w"
+          ],
+          // Internal packages.
+          [
+            "^(@|components)(/.*|$)"
+          ],
+          // Side effect imports.
+          [
+            "^\\u0000"
+          ],
+          // Parent imports. Put `..` last.
+          [
+            "^\\.\\.(?!/?$)",
+            "^\\.\\./?$"
+          ],
+          // Other relative imports. Put same-folder imports and `.` last.
+          [
+            "^\\./(?=.*/)(?!/?$)",
+            "^\\.(?!/?$)",
+            "^\\./?$"
+          ],
+          // Style imports.
+          [
+            "^.+\\.?(css)$"
+          ]
+        ]
+      }
+    ]
 	}
 }

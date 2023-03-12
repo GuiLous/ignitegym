@@ -1,6 +1,6 @@
+import { TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Heading, HStack, Icon, Text, VStack } from 'native-base';
-import { TouchableOpacity } from 'react-native';
 
 import { UserPhoto } from './UserPhoto';
 

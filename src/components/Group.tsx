@@ -1,4 +1,4 @@
-import { Pressable, Text, IPressableProps } from 'native-base';
+import { IPressableProps, Pressable, Text } from 'native-base';
 
 interface GroupProps extends IPressableProps {
   name: string;

@@ -1,6 +1,6 @@
+import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { Heading, HStack, Icon, Image, Text, VStack } from 'native-base';
-import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 interface ExerciseCardProps extends TouchableOpacityProps {}
 
