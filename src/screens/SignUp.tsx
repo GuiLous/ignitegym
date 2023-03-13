@@ -1,15 +1,32 @@
+import { Controller, useForm } from 'react-hook-form';
 import BackgroundImg from '@assets/background.png';
 import LogoSvg from '@assets/logo.svg';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
 import { useNavigation } from '@react-navigation/native';
-import { Center, Heading, Image, ScrollView, Text, VStack } from 'native-base';
+import {
+  Center,
+  Divider,
+  Heading,
+  HStack,
+  Image,
+  ScrollView,
+  Text,
+  VStack,
+} from 'native-base';
 
 export function SignUp() {
   const { goBack } = useNavigation();
 
+  const { control, handleSubmit, reset } = useForm();
+
   function handleGoBack() {
     goBack();
+  }
+
+  function handleSignUp(data: any) {
+    console.log('data', data);
+    reset();
   }
 
   return (
@@ -38,23 +55,73 @@ export function SignUp() {
             Crie sua conta
           </Heading>
 
-          <Input placeholder="Nome" />
-
-          <Input
-            placeholder="E-mail"
-            keyboardType="email-address"
-            autoCapitalize="none"
+          <Controller
+            control={control}
+            name="name"
+            render={({ field: { onChange, value } }) => (
+              <Input placeholder="Nome" onChangeText={onChange} value={value} />
+            )}
           />
 
-          <Input placeholder="Senha" secureTextEntry />
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="E-mail"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+          />
 
-          <Button title="Criar e acessar" />
+          <HStack flex={1} mb={4} alignItems="center" space={2}>
+            <Divider bgColor="gray.400" h={1} flex={1} />
+            <Text color="gray.400">#</Text>
+            <Divider bgColor="gray.400" h={1} flex={1} />
+          </HStack>
+
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Senha"
+                onChangeText={onChange}
+                value={value}
+                secureTextEntry
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="password_confirm"
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Confirmar a senha"
+                onChangeText={onChange}
+                value={value}
+                onSubmitEditing={handleSubmit(handleSignUp)}
+                returnKeyType="send"
+                secureTextEntry
+              />
+            )}
+          />
+
+          <Button
+            title="Criar e acessar"
+            onPress={handleSubmit(handleSignUp)}
+            mt={8}
+          />
         </Center>
 
         <Button
           title="Voltar para o login"
           variant="outline"
-          mt={24}
+          mt={4}
           onPress={handleGoBack}
         />
       </VStack>

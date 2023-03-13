@@ -1,3 +1,8 @@
+import {
+  Platform,
+  TouchableOpacity,
+  TouchableWithoutFeedbackProps,
+} from 'react-native';
 import HistorySvg from '@assets/history.svg';
 import HomeSvg from '@assets/home.svg';
 import ProfileSvg from '@assets/profile.svg';
@@ -10,11 +15,6 @@ import { History } from '@screens/History';
 import { Home } from '@screens/Home';
 import { Profile } from '@screens/Profile';
 import { useTheme } from 'native-base';
-import {
-  Platform,
-  TouchableOpacity,
-  TouchableWithoutFeedbackProps,
-} from 'react-native';
 
 type AppRoutes = {
   home: undefined;
