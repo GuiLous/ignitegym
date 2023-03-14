@@ -3,6 +3,7 @@ import BackgroundImg from '@assets/background.png';
 import LogoSvg from '@assets/logo.svg';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
 import {
   Center,
@@ -14,18 +15,57 @@ import {
   Text,
   VStack,
 } from 'native-base';
+import * as yup from 'yup';
+
+type FormDataProps = {
+  name: string;
+  email: string;
+  password: string;
+  password_confirm: string;
+};
+
+const signUpSchema = yup.object({
+  name: yup.string().required('Informe o nome.'),
+  email: yup.string().required('Informe o e-mail.').email('E-mail inválido.'),
+  password: yup
+    .string()
+    .required('Informe a senha')
+    .min(6, 'A senha deve ter no mínimo 6 dígitos.'),
+  password_confirm: yup
+    .string()
+    .required('Confirme a senha')
+    .oneOf([yup.ref('password')], 'As senhas não batem.'),
+});
 
 export function SignUp() {
   const { goBack } = useNavigation();
 
-  const { control, handleSubmit, reset } = useForm();
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormDataProps>({
+    resolver: yupResolver(signUpSchema),
+    defaultValues: {
+      email: '',
+      name: '',
+      password: '',
+      password_confirm: '',
+    },
+  });
 
   function handleGoBack() {
     goBack();
   }
 
-  function handleSignUp(data: any) {
-    console.log('data', data);
+  function handleSignUp({
+    email,
+    name,
+    password,
+    password_confirm,
+  }: FormDataProps) {
+    console.log(email, name, password, password_confirm);
     reset();
   }
 
@@ -59,7 +99,12 @@ export function SignUp() {
             control={control}
             name="name"
             render={({ field: { onChange, value } }) => (
-              <Input placeholder="Nome" onChangeText={onChange} value={value} />
+              <Input
+                placeholder="Nome"
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.name?.message}
+              />
             )}
           />
 
@@ -73,6 +118,7 @@ export function SignUp() {
                 autoCapitalize="none"
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.email?.message}
               />
             )}
           />
@@ -91,6 +137,7 @@ export function SignUp() {
                 placeholder="Senha"
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.password?.message}
                 secureTextEntry
               />
             )}
@@ -106,6 +153,7 @@ export function SignUp() {
                 value={value}
                 onSubmitEditing={handleSubmit(handleSignUp)}
                 returnKeyType="send"
+                errorMessage={errors.password_confirm?.message}
                 secureTextEntry
               />
             )}
