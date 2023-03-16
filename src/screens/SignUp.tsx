@@ -5,6 +5,8 @@ import { Button } from '@components/Button';
 import { Input } from '@components/Input';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
+import { api } from '@services/api';
+import { AppError } from '@utils/AppError';
 import {
   Center,
   Divider,
@@ -13,6 +15,7 @@ import {
   Image,
   ScrollView,
   Text,
+  useToast,
   VStack,
 } from 'native-base';
 import * as yup from 'yup';
@@ -39,6 +42,7 @@ const signUpSchema = yup.object({
 
 export function SignUp() {
   const { goBack } = useNavigation();
+  const toast = useToast();
 
   const {
     control,
@@ -60,23 +64,29 @@ export function SignUp() {
   }
 
   async function handleSignUp({ email, name, password }: FormDataProps) {
-    const response = await fetch('http://192.168.1.115:3333/users', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    try {
+      const response = await api.post('/users', {
         email,
         name,
         password,
-      }),
-    });
+      });
+      console.log(response.data);
+      reset();
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : 'Não foi possível criar a conta. Tente novamente mais tarde!';
 
-    const data = await response.json();
-    console.log('🚀 - data:', data);
-
-    reset();
+      toast.show({
+        title: title,
+        placement: 'top',
+        bgColor: 'red.500',
+        marginX: '8px',
+        _title: { textAlign: 'center' },
+        _description: { textAlign: 'center' },
+      });
+    }
   }
 
   return (
