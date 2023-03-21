@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import BackgroundImg from '@assets/background.png';
 import LogoSvg from '@assets/logo.svg';
@@ -28,6 +29,8 @@ export function SignIn() {
 
   const { navigate } = useNavigation<AuthNavigatorRoutesProps>();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     control,
     handleSubmit,
@@ -40,12 +43,15 @@ export function SignIn() {
 
   async function handleSignIn({ email, password }: FormData) {
     try {
+      setIsLoading(true);
       await singIn(email, password);
     } catch (error) {
       const isAppError = error instanceof AppError;
       const title = isAppError
         ? error.message
         : 'Erro ao fazer login. Tente novamente mais tarde!';
+
+      setIsLoading(false);
 
       toast.show({
         title: title,
@@ -113,7 +119,11 @@ export function SignIn() {
             )}
           />
 
-          <Button title="Acessar" onPress={handleSubmit(handleSignIn)} />
+          <Button
+            title="Acessar"
+            onPress={handleSubmit(handleSignIn)}
+            isLoading={isLoading}
+          />
         </Center>
 
         <Center mt={24}>
