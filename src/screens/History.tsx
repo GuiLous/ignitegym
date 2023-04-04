@@ -18,7 +18,6 @@ export function History() {
     try {
       setIsLoading(true);
       const response = await api.get('/history');
-      console.log('🚀 - response:', JSON.stringify(response.data));
 
       setExercises(response.data);
     } catch (error) {

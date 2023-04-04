@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Platform, TouchableOpacity } from 'react-native';
+import defaultUserPhotoImg from '@assets/userPhotoDefault.png';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
 import { ScreenHeader } from '@components/ScreenHeader';
@@ -60,9 +61,8 @@ const profileSchema = yup.object({
 export function Profile() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [photoIsLoaded, setPhotoIsLoaded] = useState(true);
-  const [userPhoto, setUserPhoto] = useState('https://github.com/guilous.png');
 
-  const { user } = useAuth();
+  const { user, updateUserProfile } = useAuth();
 
   const toast = useToast();
 
@@ -70,6 +70,7 @@ export function Profile() {
     handleSubmit,
     control,
     formState: { errors },
+    reset,
   } = useForm<FormDataProps>({
     defaultValues: {
       name: user.name,
@@ -110,7 +111,40 @@ export function Profile() {
           });
         }
 
-        setUserPhoto(photoSelected.assets[0].uri);
+        const fileExtension = photoSelected.assets[0].uri.split('.').pop();
+
+        const photoFile = {
+          name: `${user.name}.${fileExtension}`.toLowerCase(),
+          uri: photoSelected.assets[0].uri,
+          type: `${photoSelected.assets[0].type}/${fileExtension}`,
+        } as any;
+
+        const userPhotoUploadForm = new FormData();
+        userPhotoUploadForm.append('avatar', photoFile);
+
+        const avatarUpdatedResponse = await api.patch(
+          '/users/avatar',
+          userPhotoUploadForm,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          },
+        );
+
+        const userUpdated = user;
+        userUpdated.avatar = avatarUpdatedResponse.data.avatar;
+
+        updateUserProfile(userUpdated);
+
+        return toast.show({
+          title: 'Perfil atualizado!',
+          placement: 'top',
+          bgColor: 'green.500',
+          marginX: '8px',
+          _title: { textAlign: 'center' },
+          _description: { textAlign: 'center' },
+        });
       }
     } catch (error) {
       console.log(error);
@@ -123,8 +157,14 @@ export function Profile() {
     try {
       setIsUpdating(true);
 
+      const userUpdated = user;
+      userUpdated.name = data.name;
+
       await api.put('/users', data);
 
+      await updateUserProfile(userUpdated);
+
+      reset();
       toast.show({
         title: 'Perfil atualizado com sucesso!',
         placement: 'top',
@@ -165,7 +205,11 @@ export function Profile() {
               isLoaded={photoIsLoaded}>
               <TouchableOpacity onPress={() => handleUserPhotoSelect()}>
                 <UserPhoto
-                  source={{ uri: userPhoto }}
+                  source={
+                    user.avatar
+                      ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` }
+                      : defaultUserPhotoImg
+                  }
                   alt="Foto do usuário"
                   size={PHOTO_SIZE}
                 />
